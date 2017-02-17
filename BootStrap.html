@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+<head>
+<title>TODO supply a title</title>
+ <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+
+$(document).ready(function(){       
+$("#frm1").submit(function (ev) {
+    ev.preventDefault();
+    var Item_Name=document.getElementById("itm_name").value;
+    var Item_Price=document.getElementById("itm_prc").value;
+    var Item_Description=document.getElementById("itm_desc").value;
+    var counter;
+    if (Item_Name == '' || Item_Price == '' || Item_Description=='') {
+        alert("Please Fill All Fields");
+    } 
+    else{
+       
+        $.ajax({
+            type: "POST",
+            url: '/users',
+            data:{  
+            I_name:document.forms["myForm"]["itm_name"].value,
+            I_Desce:document.forms["myForm"]["itm_desc"].value,
+            I_Price:document.forms["myForm"]["itm_prc"].value
+            }, //frm.serialize(),
+            success: function (data) {
+                if (counter>0)
+                {
+                    $("#id1").html(data['I_name']);
+                    $("#id2").html(data['I_Desce']);alert("c>0");
+                    $("#id3").html(data['I_Price']);
+                }
+                else
+                {
+                    counter=1;
+                    $.getJSON("/users",function(data){
+                        $.each(data,function(i,field){
+                            $("#div1").append("<h3>"+field['I_name']+"</h3><br/>");
+                            $("#id1").html(field['I_name']);
+                            $("#id2").html(field['I_Desce']);
+                            $("#id3").html(field['I_Price']);
+                        }); 
+                    });alert("c=1");
+                }
+                
+            }
+            });
+        } 
+        
+});
+});
+</script>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Store</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Catalog</a></li>
+            <li><a href="#">Content</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container" style="margin-left: 10px">
+    <div class="row" >
+        <div class="col-sm-3">
+            <div class="list-group">
+                <a href="#" class="list-group-item active">Cras justo odio</a>
+                <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+                <a href="#" class="list-group-item">Morbi leo risus</a>
+                <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                <a href="#" class="list-group-item">Vestibulum at eros</a>
+            </div> 
+        </div>
+        <div class="col-sm-9">
+            <form class="form-inline" id="frm1" name="myForm">
+                <div class="form-group" style="margin-bottom: 10px">
+                    <label for="search">Search</label>
+                    <input type="text" class="form-control" id="search" placeholder="Search by item name">
+                </div>
+                <div class="form-group" >
+                    <label for="item">Add Item</label>
+                    <input type="text" class="form-control" id="itm_name" placeholder="Item Name">
+                    <input type="text" class="form-control" id="itm_desc" placeholder="Description">
+                    <input type="text" class="form-control" id="itm_prc" placeholder="Price">
+                    <button type="submit" class="btn btn-default" style="background-color: #EFEFF0">Add</button>
+                </div>
+            </form>
+            <div id="div1" style="background-color: #EAEAEA; background-color: rgba(0.8, 0, 0.5,0.3);padding: 10px;margin-top: 15px">
+                <h3 class="col-sm-8" id="id1">Soccerball</h3><br/>
+                <span class="btn btn-default" id="id3" style="background-color: #428BCA; color: white;margin-right: 20px" >$19.95</span>
+                <span class="control-label" id="id4" style="color: white" ><img src="Remove.png" style="width:70px"></span>
+                <h5  id="id2" style="margin-left: 15px">Fifa approved size and weight</h5>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
