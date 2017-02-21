@@ -7,13 +7,12 @@ and open the template in the editor.
 <html>
 <head>
 <title>TODO supply a title</title>
- <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script>
-
 $(document).ready(function(){       
 $("#frm1").submit(function (ev) {
     ev.preventDefault();
@@ -25,41 +24,56 @@ $("#frm1").submit(function (ev) {
         alert("Please Fill All Fields");
     } 
     else{
-       
         $.ajax({
             type: "POST",
-            url: '/users',
+            url: '/products',
             data:{  
             I_name:document.forms["myForm"]["itm_name"].value,
             I_Desce:document.forms["myForm"]["itm_desc"].value,
             I_Price:document.forms["myForm"]["itm_prc"].value
             }, //frm.serialize(),
             success: function (data) {
-                if (counter>0)
-                {
-                    $("#id1").html(data['I_name']);
-                    $("#id2").html(data['I_Desce']);alert("c>0");
-                    $("#id3").html(data['I_Price']);
+                if (counter>0){
+                    $("#frm1").append($("<div class='div1'id='"+data['id']+"' style='background-color: #EAEAEA; background-color: rgba(0.8, 0, 0.5,0.3);padding: 10px;margin-top: 15px'>"
+                    +"<h3 class='col-sm-8'>" +data['I_name']+ "</h3><br/>"+"<span class='btn btn-default'  style='background-color: #428BCA; color: white;margin-right: 20px'>"
+                    +data['I_Price']+"</span><span class='control-label'  style='color: white' onclick='Remove()' ><img src='Remove.png' style='width:70px'></span>"
+                    +" <h5  style='margin-left: 15px'>"+data['I_Desce']+"</h5></div>"));
+                           
                 }
-                else
-                {
+                else{
                     counter=1;
-                    $.getJSON("/users",function(data){
+                    $.getJSON("/products",function(data){
                         $.each(data,function(i,field){
-                            $("#div1").append("<h3>"+field['I_name']+"</h3><br/>");
-                            $("#id1").html(field['I_name']);
-                            $("#id2").html(field['I_Desce']);
-                            $("#id3").html(field['I_Price']);
+                            $("#frm1").append($("<div class='div1'id='"+field['id']+"' style='background-color: #EAEAEA; background-color: rgba(0.8, 0, 0.5,0.3);padding: 10px;margin-top: 15px'>"
+                            +"<h3 class='col-sm-8'>" +field['I_name']+ "</h3><br/>"+"<span class='btn btn-default'  style='background-color: #428BCA; color: white;margin-right: 20px'>"
+                            +field['I_Price']+"</span><span class='control-label'  style='color: white' onclick='Remove(this)' ><img src='Remove.png' style='width:70px'></span>"
+                            +" <h5  style='margin-left: 15px'>"+field['I_Desce']+"</h5></div>"));
                         }); 
-                    });alert("c=1");
+                    });
                 }
                 
             }
-            });
-        } 
+        });
+    } 
         
 });
 });
+function Remove(element) {
+    var id1=$(element).parent().attr('id');
+    if(confirm("Are you sure you want to delete this Record?")){
+        $.ajax({
+            type: "delete",
+            url: "/products/"+id1,
+            success: function(){ 
+               alert( $(element).parent().attr('id'));
+               $(element).parent().remove();
+                
+        }
+    });
+       
+}
+    return false;
+}
 </script>
 </head>
 <body>
@@ -88,7 +102,7 @@ $("#frm1").submit(function (ev) {
             </div> 
         </div>
         <div class="col-sm-9">
-            <form class="form-inline" id="frm1" name="myForm">
+            <form class="form-inline" id="frm1" name="myForm" style="margin-bottom: 10px">
                 <div class="form-group" style="margin-bottom: 10px">
                     <label for="search">Search</label>
                     <input type="text" class="form-control" id="search" placeholder="Search by item name">
@@ -101,12 +115,6 @@ $("#frm1").submit(function (ev) {
                     <button type="submit" class="btn btn-default" style="background-color: #EFEFF0">Add</button>
                 </div>
             </form>
-            <div id="div1" style="background-color: #EAEAEA; background-color: rgba(0.8, 0, 0.5,0.3);padding: 10px;margin-top: 15px">
-                <h3 class="col-sm-8" id="id1">Soccerball</h3><br/>
-                <span class="btn btn-default" id="id3" style="background-color: #428BCA; color: white;margin-right: 20px" >$19.95</span>
-                <span class="control-label" id="id4" style="color: white" ><img src="Remove.png" style="width:70px"></span>
-                <h5  id="id2" style="margin-left: 15px">Fifa approved size and weight</h5>
-            </div>
         </div>
     </div>
 </div>
